@@ -61,6 +61,15 @@ namespace InputFileCompareTest
             new InputFileComparer.ConfigurationValidator().ValidateConfiguration(config);
             config.SecondFileHeaderLine.Should().Be(config.FirstFileHeaderLine);
         }
+
+        [TestMethod]
+        public void ConfigurationMustHaveOutputFileName()
+        {
+            var config = CreateCorrectConfig();
+            config.OutputFileName = null;
+            Action action = () => new InputFileComparer.ConfigurationValidator().ValidateConfiguration(config);
+            action.ShouldThrow<ArgumentException>().WithMessage("Configuration OutputFileName must be specified");
+        }
         
         private InputFileComparer.Config CreateCorrectConfig()
         {
@@ -69,6 +78,7 @@ namespace InputFileCompareTest
             config.FirstFile = @"C:\Temp\File1.txt";
             config.SecondFile = @"C:\Temp\File2.txt";
             config.DateColumnName = "DATE";
+            config.OutputFileName = @"C:\Temp\File3.txt";
             config.FirstFileHeaderLine = 1;
             config.SecondFileHeaderLine = 2;
             return config;

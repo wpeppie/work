@@ -13,6 +13,13 @@ namespace InputFileComparer
         private string _dateColumnName;
         private int? _firstFileHeaderLine;
         private int? _secondFileHeaderLine;
+        private string _outputFileName;
+
+        public string OutputFileName
+        {
+            get { return _outputFileName; }
+            set { _outputFileName = value; }
+        }
 
         public int? SecondFileHeaderLine
         {

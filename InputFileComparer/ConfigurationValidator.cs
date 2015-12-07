@@ -13,6 +13,7 @@ namespace InputFileComparer
             CheckMandatoryString(() => config.FirstFile);
             CheckMandatoryString(() => config.SecondFile);
             CheckMandatoryString(() => config.DateColumnName);
+            CheckMandatoryString(() => config.OutputFileName);
             CheckMandatoryInt(() => config.FirstFileHeaderLine);
             config.SecondFileHeaderLine = config.SecondFileHeaderLine 
                 ?? config.FirstFileHeaderLine;
