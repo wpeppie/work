@@ -7,6 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InputFileComparer", "InputF
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InputFileCompareTest", "InputFileCompareTest\InputFileCompareTest.csproj", "{E1E3FFAA-3E7C-4B85-B6F2-C320CC823C8C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InputFileComparerBase", "InputFileComparerBase", "{9591FF6D-9AFD-4393-A21E-8E02674AB2D1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FileSystemAssemblyBase", "FileSystemAssemblyBase", "{F1C10BF8-D970-4B38-926C-3460E8280279}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSystemAssembly", "FileSystemAssembly\FileSystemAssembly.csproj", "{E30BAC9F-609C-4C69-9786-B95620967FD7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,8 +27,17 @@ Global
 		{E1E3FFAA-3E7C-4B85-B6F2-C320CC823C8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1E3FFAA-3E7C-4B85-B6F2-C320CC823C8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E1E3FFAA-3E7C-4B85-B6F2-C320CC823C8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E30BAC9F-609C-4C69-9786-B95620967FD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E30BAC9F-609C-4C69-9786-B95620967FD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E30BAC9F-609C-4C69-9786-B95620967FD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E30BAC9F-609C-4C69-9786-B95620967FD7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E6086470-1D3D-4F23-8FDE-BE22E6477DEA} = {9591FF6D-9AFD-4393-A21E-8E02674AB2D1}
+		{E1E3FFAA-3E7C-4B85-B6F2-C320CC823C8C} = {9591FF6D-9AFD-4393-A21E-8E02674AB2D1}
+		{E30BAC9F-609C-4C69-9786-B95620967FD7} = {F1C10BF8-D970-4B38-926C-3460E8280279}
 	EndGlobalSection
 EndGlobal

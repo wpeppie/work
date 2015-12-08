@@ -2,7 +2,10 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FluentAssertions;
 using System.Xml.Linq;
-
+using System.Reflection;
+using NSubstitute;
+using FileSystemAssembly.Interface;
+using InputFileComparer;
 
 namespace InputFileCompareTest
 {
@@ -10,78 +13,126 @@ namespace InputFileCompareTest
     public class ConfigurationTest
     {
         [TestMethod]
+        public void ConfigurationMustHaveColumnSeparator()
+        {
+            CheckForEmptyValueMessage("ColumnsSeparator");
+        }
+
+        [TestMethod]
         public void ConfigurationMustHaveKeyColumns()
         {
-            var config = CreateCorrectConfig();
-            config.KeyColumns = null;
-            Action action = () => new InputFileComparer.ConfigurationValidator().ValidateConfiguration(config);
-            action.ShouldThrow<ArgumentException>().WithMessage("Configuration KeyColumns must contain at least 1 string element");
+            CheckForEmptyCollectionMessage("KeyColumns");
+        }
+
+        [TestMethod]
+        public void ConfigurationMustHaveComparisonColumns()
+        {
+            CheckForEmptyCollectionMessage("ComparisonColumns");
         }
 
         [TestMethod]
         public void ConfigurationMustHaveFirstFile()
         {
-            var config = CreateCorrectConfig();
-            config.FirstFile = null;
-            Action action = () => new InputFileComparer.ConfigurationValidator().ValidateConfiguration(config);
-            action.ShouldThrow<ArgumentException>().WithMessage("Configuration FirstFile must be specified");
+            CheckForEmptyValueMessage("FirstFile");
+        }
+
+        [TestMethod]
+        public void ConfigurationFirstFileMustExist()
+        {
+            CheckForNonExistingFile("FirstFile");
         }
 
         [TestMethod]
         public void ConfigurationMustHaveSecondFile()
         {
-            var config = CreateCorrectConfig();
-            config.SecondFile = null;
-            Action action = () => new InputFileComparer.ConfigurationValidator().ValidateConfiguration(config);
-            action.ShouldThrow<ArgumentException>().WithMessage("Configuration SecondFile must be specified");
+            CheckForEmptyValueMessage("SecondFile");
         }
 
         [TestMethod]
-        public void ConfigurationMustHaveDateColumName()
+        public void ConfigurationSecondFileMustExist()
         {
-            var config = CreateCorrectConfig();
-            config.DateColumnName = null;
-            Action action = () => new InputFileComparer.ConfigurationValidator().ValidateConfiguration(config);
-            action.ShouldThrow<ArgumentException>().WithMessage("Configuration DateColumnName must be specified");
+            CheckForNonExistingFile("SecondFile");
         }
+
         [TestMethod]
-        public void ConfigurationMustHaveFirstFileHeaderLine()
+        public void ConfigurationMustHaveDateColumnName()
         {
-            var config = CreateCorrectConfig();
-            config.FirstFileHeaderLine = null;
-            Action action = () => new InputFileComparer.ConfigurationValidator().ValidateConfiguration(config);
-            action.ShouldThrow<ArgumentException>().WithMessage("Configuration FirstFileHeaderLine must be specified");
+            CheckForEmptyValueMessage("DateColumnName");
         }
 
         [TestMethod]
         public void FirstFileHeaderLineIsUsedIfSecondFileHeaderLineIsNotProvided()
         {
-            var config = CreateCorrectConfig();
+            var config = ConfigurationCreator.CreateCorrectConfig();
             config.SecondFileHeaderLine = null;
-            new InputFileComparer.ConfigurationValidator().ValidateConfiguration(config);
+            new ConfigurationValidator(FileSystemCreator.GetFileSystem()).ValidateConfiguration(config);
             config.SecondFileHeaderLine.Should().Be(config.FirstFileHeaderLine);
+        }
+
+        [TestMethod]
+        public void IfSecondFileHeaderLineIsProvidedItIsNotOverwritten()
+        {
+            var config = ConfigurationCreator.CreateCorrectConfig();
+            config.SecondFileHeaderLine = 1;
+            new InputFileComparer.ConfigurationValidator(FileSystemCreator.GetFileSystem()).ValidateConfiguration(config);
+            config.SecondFileHeaderLine.Should().Be(1);
         }
 
         [TestMethod]
         public void ConfigurationMustHaveOutputFileName()
         {
-            var config = CreateCorrectConfig();
-            config.OutputFileName = null;
-            Action action = () => new InputFileComparer.ConfigurationValidator().ValidateConfiguration(config);
-            action.ShouldThrow<ArgumentException>().WithMessage("Configuration OutputFileName must be specified");
+            CheckForEmptyValueMessage( "OutputFileName");
         }
-        
-        private InputFileComparer.Config CreateCorrectConfig()
+
+        [TestMethod]
+        public void OutputFileFolderMustExist()
         {
-            var config = new InputFileComparer.Config();
-            config.KeyColumns = new[] { "BB_UNIQUE" };
-            config.FirstFile = @"C:\Temp\File1.txt";
-            config.SecondFile = @"C:\Temp\File2.txt";
-            config.DateColumnName = "DATE";
-            config.OutputFileName = @"C:\Temp\File3.txt";
-            config.FirstFileHeaderLine = 1;
-            config.SecondFileHeaderLine = 2;
-            return config;
+            CheckForNonExistingFolder("OutputFileName");
         }
+
+        private void CheckForEmptyValueMessage(string propertyName)
+        {
+            var config = ConfigurationCreator.CreateCorrectConfig();
+            config.GetType().GetProperty(propertyName).SetValue(config, null, null);
+            ValidateConfiguration(config).ShouldThrow<ArgumentException>()
+                .WithMessage("Configuration " + propertyName + " must be specified");
+        }
+
+        private void CheckForEmptyCollectionMessage(string propertyName)
+        {
+            var config = ConfigurationCreator.CreateCorrectConfig();
+            config.GetType().GetProperty(propertyName).SetValue(config, null, null);
+            ValidateConfiguration(config).ShouldThrow<ArgumentException>()
+                .WithMessage("Configuration " + propertyName + " must contain at least 1 string element");
+        }
+
+        private void CheckForNonExistingFile(string propertyName)
+        {
+            var config = ConfigurationCreator.CreateCorrectConfig();
+            config.GetType().GetProperty(propertyName).SetValue(config, "FileDoesNotExist", null);
+            ValidateConfiguration(config).ShouldThrow<ArgumentException>()
+                .WithMessage("Configuration " + propertyName + " does not exist");
+        }
+
+        private void CheckForNonExistingFolder(string propertyName)
+        {
+            var config = ConfigurationCreator.CreateCorrectConfig();
+            config.GetType().GetProperty(propertyName).SetValue(config, @"C:\Temp\DoesNotExist\File.txt", null);
+            ValidateConfiguration(config).ShouldThrow<ArgumentException>()
+                .WithMessage("Configuration " + propertyName + " does not exist");
+        }
+
+        private Action ValidateConfiguration(Config config)
+        {
+            return () => new InputFileComparer.ConfigurationValidator
+                    (FileSystemCreator.GetFileSystem()).ValidateConfiguration(config);
+        }
+
+
+
+
+
+
+
     }
 }

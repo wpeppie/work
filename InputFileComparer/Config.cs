@@ -11,9 +11,18 @@ namespace InputFileComparer
         private string _firstFile;
         private string _secondFile;
         private string _dateColumnName;
-        private int? _firstFileHeaderLine;
+        private int _firstFileHeaderLine;
         private int? _secondFileHeaderLine;
         private string _outputFileName;
+        private string[] _comparisonColumns;
+        private string _columnsSeparator;
+
+        public string[] ComparisonColumns
+        {
+            get { return _comparisonColumns; }
+            set { _comparisonColumns = value; }
+        }
+
 
         public string OutputFileName
         {
@@ -27,7 +36,7 @@ namespace InputFileComparer
             set { _secondFileHeaderLine = value; }
         }
 
-        public int? FirstFileHeaderLine
+        public int FirstFileHeaderLine
         {
             get { return _firstFileHeaderLine; }
             set { _firstFileHeaderLine = value; }
@@ -54,6 +63,12 @@ namespace InputFileComparer
         {
             get { return _secondFile; }
             set { _secondFile = value; }
+        }
+
+        public string ColumnsSeparator 
+        {
+            get { return _columnsSeparator; }
+            set { _columnsSeparator = value; }        
         }
     }
 }

@@ -41,6 +41,9 @@
     <Reference Include="FluentAssertions.Core">
       <HintPath>..\packages\FluentAssertions.4.1.0\lib\net40\FluentAssertions.Core.dll</HintPath>
     </Reference>
+    <Reference Include="NSubstitute">
+      <HintPath>..\packages\NSubstitute.1.9.2.0\lib\net40\NSubstitute.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -61,10 +64,19 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ConfigurationCreator.cs" />
     <Compile Include="ConfigurationTest.cs" />
+    <Compile Include="FileSystemCreator.cs" />
+    <Compile Include="InputComparerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="FileLineCollectionTest.cs" />
+    <Compile Include="ColumnNameParserTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FileSystemAssembly\FileSystemAssembly.csproj">
+      <Project>{e30bac9f-609c-4c69-9786-b95620967fd7}</Project>
+      <Name>FileSystemAssembly</Name>
+    </ProjectReference>
     <ProjectReference Include="..\InputFileComparer\InputFileComparer.csproj">
       <Project>{e6086470-1d3d-4f23-8fde-be22e6477dea}</Project>
       <Name>InputFileComparer</Name>
