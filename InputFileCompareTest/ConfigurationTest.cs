@@ -4,7 +4,7 @@ using FluentAssertions;
 using System.Xml.Linq;
 using System.Reflection;
 using NSubstitute;
-using FileSystemAssembly.Interface;
+using FileSystemAssembly.Interfaces;
 using InputFileComparer;
 
 namespace InputFileCompareTest

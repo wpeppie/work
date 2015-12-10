@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FluentAssertions;
 using InputFileComparer;
 using NSubstitute;
-using FileSystemAssembly.Interface;
+using FileSystemAssembly.Interfaces;
 using System.IO;
 
 namespace InputFileCompareTest

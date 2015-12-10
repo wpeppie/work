@@ -52,6 +52,7 @@
     <Compile Include="FileLineCollection.cs" />
     <Compile Include="InputComparer.cs" />
     <Compile Include="Line.cs" />
+    <Compile Include="LineCollection.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

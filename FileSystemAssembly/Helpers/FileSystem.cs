@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using FileSystemAssembly.Interfaces;
 
 namespace FileSystemAssembly.Helpers
 {
-    public class FileSystem: Interface.IFileSystem
+    public class FileSystem: IFileSystem
     {
-        bool Interface.IFileSystem.FileExists(string fileName)
+        public bool FileExists(string fileName)
         {
             throw new NotImplementedException();
         }
 
-        bool Interface.IFileSystem.FolderExists(string folderName)
+        public bool FolderExists(string folderName)
         {
             throw new NotImplementedException();
         }
@@ -27,10 +28,6 @@ namespace FileSystemAssembly.Helpers
         {
             throw new NotImplementedException();
         }
-
-
-
-
 
         public void WriteFile(string fileName, string[] outputLines)
         {

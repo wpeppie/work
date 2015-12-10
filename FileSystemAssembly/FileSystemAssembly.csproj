@@ -41,7 +41,7 @@
   <ItemGroup>
     <Compile Include="Class1.cs" />
     <Compile Include="Helpers\FileSystem.cs" />
-    <Compile Include="Interface\IFileSystem.cs" />
+    <Compile Include="Interfaces\IFileSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq.Expressions;
-using FileSystemAssembly.Interface;
+using FileSystemAssembly.Interfaces;
 using FileSystemAssembly.Helpers;
 using System.IO;
 
