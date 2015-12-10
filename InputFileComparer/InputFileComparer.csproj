@@ -46,9 +46,12 @@
     <Compile Include="Config.cs" />
     <Compile Include="ConfigurationReader.cs" />
     <Compile Include="ConfigurationValidator.cs" />
+    <Compile Include="ComparableLine.cs" />
     <Compile Include="FileLine.cs" />
+    <Compile Include="ComparableLineCollection.cs" />
     <Compile Include="FileLineCollection.cs" />
     <Compile Include="InputComparer.cs" />
+    <Compile Include="Line.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

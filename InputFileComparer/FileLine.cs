@@ -5,13 +5,9 @@ using System.Text;
 
 namespace InputFileComparer
 {
-    public class FileLine
+    public class FileLine: Line
     {
-        private string _key;
-        private string _date;
-        private string _comparisonData;
         private string _line;
-
 
         private FileLine(string key, string date, string comparisonData, string line)
         {
@@ -22,29 +18,14 @@ namespace InputFileComparer
         }
 
         internal static FileLine Create(int[] keyColumns, string line, int dateColumn
-            , int[] comparisonColumns, string separator, bool saveOriginalData)
+            , int[] comparisonColumns, string separator)
         {
             var items = line.Split(separator.ToArray(), StringSplitOptions.None);
             var key = GenerateKey(keyColumns, items, separator);
             var date = items[dateColumn];
             var comparisonData = GetComparisonData(items, comparisonColumns, separator);
-            var fileLine = new FileLine(key, date, comparisonData, saveOriginalData?line:string.Empty);
+            var fileLine = new FileLine(key, date, comparisonData, line);
             return fileLine;
-        }
-
-        public string Key
-        {
-            get { return _key; }
-        }
-
-        public string Date
-        {
-            get { return _date; }
-        }
-
-        public string ComparisonData
-        {
-            get { return _comparisonData; }
         }
 
         public string Line
@@ -52,24 +33,6 @@ namespace InputFileComparer
             get { return _line; }
         }
 
-        private static string GetComparisonData(string[] items, int[] comparisonColumns, string separator)
-        {
-            var comparisonData = string.Empty;
-            foreach (var comparisonColumn in comparisonColumns)
-            {
-                comparisonData += items[comparisonColumn] + separator;
-            }
-            return comparisonData;
-        }
 
-        private static string GenerateKey(int[] keyColumns, string[] items, string separator)
-        {
-            var key = string.Empty;
-            foreach (var keyColumn in keyColumns)
-            {
-                key += items[keyColumn] + separator;
-            }
-            return key;
-        }
     }
 }

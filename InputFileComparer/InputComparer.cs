@@ -20,9 +20,9 @@ namespace InputFileComparer
             {
                 var config = ConfigurationReader.GetConfiguration(_fileSystem, args[0]);
                 new ConfigurationValidator(_fileSystem).ValidateConfiguration(config);
-                var previousFileLineCollection = new FileLineCollection(config, _fileSystem, false);
+                var previousFileLineCollection = new ComparableLineCollection(config, _fileSystem);
                 previousFileLineCollection.ParseLines(_fileSystem.ReadFile(config.FirstFile), config.FirstFileHeaderLine);
-                var currentFileLineCollection = new FileLineCollection(config, _fileSystem, true);
+                var currentFileLineCollection = new FileLineCollection(config, _fileSystem);
                 currentFileLineCollection.ParseLines(_fileSystem.ReadFile(config.SecondFile), config.SecondFileHeaderLine??config.FirstFileHeaderLine);
                 currentFileLineCollection.FilterComparableLines(previousFileLineCollection);
                 _fileSystem.WriteFile(config.OutputFileName, currentFileLineCollection.GetOutputLines());

@@ -16,16 +16,14 @@ namespace InputFileComparer
         private List<string> _skippedLines = new List<string>();
         private Dictionary<string, FileLine> _fileLines = new Dictionary<string,FileLine>();
         private string _headerLine;
-        private bool _saveOriginalData;
         private int[] _keyColumns;
         private int[] _comparisonColumns;
 private  int _dateColumn;
 
-        public FileLineCollection(Config config, IFileSystem fileSystem, bool saveOriginalData)
+        public FileLineCollection(Config config, IFileSystem fileSystem)
         {
             _config = config;
             _fileSystem = fileSystem;
-            _saveOriginalData = saveOriginalData;
         }
 
         public void ParseLines(List<string> lines, int headerLine)
@@ -45,33 +43,39 @@ private  int _dateColumn;
             foreach (var line in lines)
             {
                 var fileLine = FileLine.Create(_keyColumns, line, _dateColumn, _comparisonColumns
-                    , _config.ColumnsSeparator, _saveOriginalData);
+                    , _config.ColumnsSeparator);
 
-                if (!_skippableKeys.Contains(fileLine.Key))
-                {
-                    if (!KeyAlreadyExists(fileLine.Key))
-                    {
-                        _fileLines.Add(fileLine.Key, fileLine);
-                    }
-                    else
-                    {
-                        if (_saveOriginalData)
-                        {
-                            _skippedLines.Add(_fileLines[fileLine.Key].Line);
-                            _skippedLines.Add(line);
-                        }
-                        _fileLines.Remove(fileLine.Key);
-                        _skippableKeys.Add(fileLine.Key);
-                    }
+                ProcessLine(line, fileLine);
+            }
+        }
 
-                }
-                else
-                {
-                    if (_saveOriginalData)
-                    {
-                        _skippedLines.Add(line);
-                    }
-                }
+        private void ProcessLine(string line, FileLine fileLine)
+        {
+            // If the key already exists this means multiple lines with the same key are in the file
+            // As it's uncertain which version of the data needs to be compared, all lines with that
+            // key are skipped from further processing
+            if (!_skippableKeys.Contains(fileLine.Key))
+            {
+                ProcessKey(line, fileLine);
+            }
+            else
+            {
+                _skippedLines.Add(line);
+            }
+        }
+
+        private void ProcessKey(string line, FileLine fileLine)
+        {
+            if (!KeyAlreadyExists(fileLine.Key))
+            {
+                _fileLines.Add(fileLine.Key, fileLine);
+            }
+            else
+            {
+                _skippedLines.Add(_fileLines[fileLine.Key].Line);
+                _skippedLines.Add(line);
+                _fileLines.Remove(fileLine.Key);
+                _skippableKeys.Add(fileLine.Key);
             }
         }
 
@@ -85,7 +89,7 @@ private  int _dateColumn;
             { return _fileLines.Count;}
         }
 
-        public void FilterComparableLines(FileLineCollection fileLineCollectionSource)
+        public void FilterComparableLines(ComparableLineCollection fileLineCollectionSource)
         {
             var keysWithIdenticalData = new List<string>();
             foreach (var fileLine in _fileLines.Values)
@@ -101,10 +105,6 @@ private  int _dateColumn;
             }
         }
 
-        public string GetComparisonData(string key)
-        {
-            return _fileLines.ContainsKey(key)?_fileLines[key].ComparisonData:string.Empty;
-        }
 
 
         public string[] GetOutputLines()

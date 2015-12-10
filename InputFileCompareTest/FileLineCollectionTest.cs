@@ -9,25 +9,41 @@ namespace InputFileCompareTest
     [TestClass]
     public class FileLineCollectionTest
     {
-        private static FileLineCollection GetFileLineCollection(bool saveOriginalData)
+        private static FileLineCollection GetFileLineCollection()
         {
             var config = ConfigurationCreator.CreateCorrectConfig();
             var fileSystem = FileSystemCreator.GetFileSystem();
-            var fileLineCollection = new FileLineCollection(config, fileSystem, saveOriginalData);
+            var fileLineCollection = new FileLineCollection(config, fileSystem);
             return fileLineCollection;
         }
 
-        private static FileLineCollection GetFileLineCollection(Config config, bool saveOriginalData)
+        private static FileLineCollection GetFileLineCollection(Config config)
         {
             var fileSystem = FileSystemCreator.GetFileSystem();
-            var fileLineCollection = new FileLineCollection(config, fileSystem, saveOriginalData);
+            var fileLineCollection = new FileLineCollection(config, fileSystem);
             return fileLineCollection;
         }
+
+        private static ComparableLineCollection GetComparableLineCollection()
+        {
+            var config = ConfigurationCreator.CreateCorrectConfig();
+            var fileSystem = FileSystemCreator.GetFileSystem();
+            var fileLineCollection = new ComparableLineCollection(config, fileSystem);
+            return fileLineCollection;
+        }
+
+        private static ComparableLineCollection GetComparableLineCollection(Config config)
+        {
+            var fileSystem = FileSystemCreator.GetFileSystem();
+            var fileLineCollection = new ComparableLineCollection(config, fileSystem);
+            return fileLineCollection;
+        }
+
 
         [TestMethod]
         public void AddingOneLineToCollectionWithMissingKeyColumnsThrowsError()
         {
-            var fileLineCollection = GetFileLineCollection(false);
+            var fileLineCollection = GetFileLineCollection();
             var lines = new List<string>{
                 "#BBUNIQUE|DATE|COL1|COL2|COL3|COL4|COL5",
                 "ID1|DATE1|ValueOther|ValueSame|ValueSame|ValueSame|ValueSame"
@@ -40,7 +56,7 @@ namespace InputFileCompareTest
         [TestMethod]
         public void AddingOneLineToCollectionCreatesCorrectCollection()
         {
-            var fileLineCollection = GetFileLineCollection(false);
+            var fileLineCollection = GetFileLineCollection();
             var lines = new List<string>{
                 "#BBUNIQUE|DATE|COL1|COL2|COL3|COL4|COL5",
                 "ID1|DATE1|ValueOther|ValueSame|ValueSame|ValueSame|ValueSame"
@@ -52,7 +68,7 @@ namespace InputFileCompareTest
         [TestMethod]
         public void AddingSameLineToCollectionCreatesEmptyCollection()
         {
-            var fileLineCollection = GetFileLineCollection(false);
+            var fileLineCollection = GetFileLineCollection();
             var lines = new List<string> { 
                 "#BBUNIQUE|DATE|COL1|COL2|COL3|COL4|COL5",
                 "ID1|DATE1|ValueOther|ValueSame|ValueSame|ValueSame|ValueSame" ,
@@ -65,7 +81,7 @@ namespace InputFileCompareTest
         [TestMethod]
         public void AddingSameLineWithDifferentDateToCollectionCreatesEmptyCollection()
         {
-            var fileLineCollection = GetFileLineCollection(false);
+            var fileLineCollection = GetFileLineCollection();
             var lines = new List<string> { 
                 "#BBUNIQUE|DATE|COL1|COL2|COL3|COL4|COL5",
                 "ID1|DATE1|ValueOther|ValueSame|ValueSame|ValueSame|ValueSame" ,
@@ -80,7 +96,7 @@ namespace InputFileCompareTest
         {
             var config = ConfigurationCreator.CreateCorrectConfig();
             config.KeyColumns = new[] { "#BBUNIQUE", "DATE" };
-            var fileLineCollection = GetFileLineCollection(config, false);
+            var fileLineCollection = GetFileLineCollection(config);
             var lines = new List<string> { 
                 "#BBUNIQUE|DATE|COL1|COL2|COL3|COL4|COL5",
                 "ID1|DATE1|ValueOther|ValueSame|ValueSame|ValueSame|ValueSame" ,
@@ -93,7 +109,7 @@ namespace InputFileCompareTest
         [TestMethod]
         public void AddingDifferentLinesToCollectionCreatesCorrectCollection()
         {
-            var fileLineCollection = GetFileLineCollection(false);
+            var fileLineCollection = GetFileLineCollection();
             var lines = new List<string> {
                 "#BBUNIQUE|DATE|COL1|COL2|COL3|COL4|COL5",
                 "ID1|DATE1|ValueOther|ValueSame|ValueSame|ValueSame|ValueSame" ,
@@ -106,13 +122,13 @@ namespace InputFileCompareTest
         [TestMethod]
         public void FilteringFileLineCollectionWithIdenticalRowsClearsCollection()
         {
-            var fileLineCollectionSource = GetFileLineCollection(false);
+            var fileLineCollectionSource = GetComparableLineCollection();
             var lines = new List<string> { 
                 "#BBUNIQUE|DATE|COL1|COL2|COL3|COL4|COL5",
                 "ID1|DATE1|ValueOther|ValueSame|ValueSame|ValueSame|ValueSame" ,
             };
             fileLineCollectionSource.ParseLines(lines,0);
-            var fileLineCollectionResult = GetFileLineCollection(false);
+            var fileLineCollectionResult = GetFileLineCollection();
             lines = new List<string> {
                 "#BBUNIQUE|DATE|COL1|COL2|COL3|COL4|COL5",
                 "ID1|DATE1|ValueOther|ValueSame|ValueSame|ValueSame|ValueSame" ,
@@ -125,13 +141,13 @@ namespace InputFileCompareTest
         [TestMethod]
         public void FilteringFileLineCollectionWithDifferentRowsReturnsCorrectCollection()
         {
-            var fileLineCollectionSource = GetFileLineCollection(false);
+            var fileLineCollectionSource = GetComparableLineCollection();
             var lines = new List<string> {
                 "#BBUNIQUE|DATE|COL1|COL2|COL3|COL4|COL5",
                 "ID1|DATE1|ValueSame|ValueSame|ValueSame|ValueSame|ValueSame" ,
             };
             fileLineCollectionSource.ParseLines(lines, 0);
-            var fileLineCollectionResult = GetFileLineCollection(true);
+            var fileLineCollectionResult = GetFileLineCollection();
             lines = new List<string> {
                 "#BBUNIQUE|DATE|COL1|COL2|COL3|COL4|COL5",
                 "ID1|DATE1|ValueOther|ValueSame|ValueSame|ValueSame|ValueSame" ,
@@ -148,13 +164,13 @@ namespace InputFileCompareTest
         {
             var config = ConfigurationCreator.CreateCorrectConfig();
             config.ComparisonColumns = new[] { "COL2" };
-            var fileLineCollectionSource = GetFileLineCollection(config, false);
+            var fileLineCollectionSource = GetComparableLineCollection(config);
             var lines = new List<string> {
                 "#BBUNIQUE|DATE|COL1|COL2|COL3|COL4|COL5",
                 "ID1|DATE1|ValueSame|ValueSame|ValueSame|ValueSame|ValueSame" ,
             };
             fileLineCollectionSource.ParseLines(lines, 0);
-            var fileLineCollectionResult = GetFileLineCollection(config, false);
+            var fileLineCollectionResult = GetFileLineCollection(config);
             lines = new List<string> {
                 "#BBUNIQUE|DATE|COL1|COL2|COL3|COL4|COL5",
                 "ID1|DATE1|ValueOther|ValueSame|ValueSame|ValueSame|ValueSame" ,
